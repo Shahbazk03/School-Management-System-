@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Card</title>
+  <style>
+    @page { margin: 20px; }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+      color: #000;
+      position: relative;
+    }
+    .wrapper {
+      border: 2px solid #000;
+      padding: 10px;
+      position: relative;
+      min-height: 1000px; /* Force an A4 height approx */
+    }
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.1;
+      width: 400px;
+      height: 400px;
+      z-index: -1;
+      pointer-events: none;
+    }
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .header .logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+    .header .school-info {
+      text-align: center;
+      flex: 1;
+      padding: 0 10px;
+    }
+    .school-info h1 {
+      margin: 0;
+      font-size: 24px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .school-info p {
+      margin: 2px 0;
+      font-size: 12px;
+    }
+    /* Title */
+    .title-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .title-section h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    /* Student Details */
+    .student-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .student-col {
+      flex: 1;
+    }
+    .student-col table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .student-col table td {
+      padding: 3px 0;
+      font-size: 14px;
+    }
+    .student-col table td:first-child {
+      font-weight: bold;
+      width: 120px;
+    }
+    .student-photo {
+      width: 100px;
+      height: 120px;
+      border: 1px solid #000;
+      margin: 0 20px;
+      object-fit: cover;
+    }
+    /* Marks Table */
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .marks-table th, .marks-table td {
+      border: 1px solid #000;
+      padding: 8px;
+    }
+    .marks-table th {
+      font-weight: bold;
+    }
+    .marks-table .subject-col {
+      text-align: left;
+    }
+    .total-row {
+      font-weight: bold;
+    }
+    /* Signatures */
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      align-items: flex-end;
+    }
+    .signature-box {
+      text-align: center;
+      width: 200px;
+    }
+    .signature-img {
+      max-width: 150px;
+      max-height: 50px;
+      margin-bottom: 5px;
+    }
+    .signature-box p {
+      margin: 0;
+      border-top: 1px solid #000;
+      padding-top: 5px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    /* Parent Signature */
+    .parent-signature {
+      margin-top: 50px;
+      border-top: 1px solid #000;
+      padding-top: 10px;
+    }
+    .parent-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <% if (settings.watermarkUrl) { %>
+      <img src="<%= settings.watermarkUrl %>" class="watermark" alt="Watermark" />
+    <% } %>
+    
+    <div class="header">
+      <div style="width: 120px;">
+        <% if (settings.leftLogoUrl) { %>
+          <img src="<%= settings.leftLogoUrl %>" class="logo" />
+        <% } %>
+      </div>
+      <div class="school-info">
+        <h1><%= settings.schoolName %></h1>
+        <p><strong><%= settings.affiliationText %></strong></p>
+        <p><%= settings.address %></p>
+        <p><%= settings.contact %></p>
+        <p>Email: <%= settings.email %> | Web: <%= settings.website %></p>
+      </div>
+      <div style="width: 120px; text-align: right;">
+        <% if (settings.rightLogoUrl) { %>
+          <img src="<%= settings.rightLogoUrl %>" class="logo" />
+        <% } else { %>
+          <strong><%= settings.establishedText %></strong>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="title-section">
+      <h2>Record of Academic Performance - <%= exam.name %></h2>
+      <h2>Session: <%= academicSession.name %></h2>
+    </div>
+
+    <div class="student-details">
+      <div class="student-col">
+        <table>
+          <tr><td>Student's Name</td><td>: <%= student.firstName %> <%= student.lastName %></td></tr>
+          <% const parent = student.parents && student.parents.length > 0 ? student.parents[0].parent : null; %>
+          <tr><td>Father's Name</td><td>: <%= parent?.fatherName || '-' %></td></tr>
+          <tr><td>Mother's Name</td><td>: <%= parent?.motherName || '-' %></td></tr>
+          <tr><td>Mobile No.</td><td>: <%= parent?.phone || '-' %></td></tr>
+          <tr><td>Date of Birth</td><td>: <%= student.dob ? new Date(student.dob).toLocaleDateString('en-GB').replace(/\//g, '-') : '-' %></td></tr>
+        </table>
+      </div>
+      
+      <div>
+        <img src="<%= student.photo || 'https://via.placeholder.com/100x120?text=Photo' %>" class="student-photo" />
+      </div>
+
+      <div class="student-col">
+        <table>
+          <tr><td>Roll No.</td><td>: <%= enrollment?.rollNo || '-' %></td></tr>
+          <tr><td>Adm. No.</td><td>: <%= student.admissionNo || student.permanentId %></td></tr>
+          <tr><td>Class/Section</td><td>: <%= enrollment?.classSection?.class?.name || '-' %> <%= enrollment?.classSection?.section?.name || '' %></td></tr>
+          <tr><td>Attendance in %</td><td>: <%= reportCard.attendancePercentage ? reportCard.attendancePercentage + '%' : '-' %></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th rowspan="2" class="subject-col">Subject</th>
+          <th colspan="2"><%= exam.name %> <%= academicSession.name %></th>
+          <th rowspan="2">Marks in %</th>
+        </tr>
+        <tr>
+          <th>Max. Marks</th>
+          <th>Marks Obtained</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          let totalMax = 0;
+          let totalObtained = 0;
+          for (const mark of marks) { 
+            const max = mark.subject.theoryMarks + mark.subject.practicalMarks;
+            const obtained = (mark.marksObtained || 0) + (mark.practicalMarksObtained || 0);
+            totalMax += max;
+            totalObtained += obtained;
+            const percentage = max > 0 ? ((obtained / max) * 100).toFixed(0) + '%' : '-';
+        %>
+          <tr>
+            <td class="subject-col"><%= mark.subject.subjectName %></td>
+            <td><%= max %></td>
+            <td><%= obtained %></td>
+            <td><%= percentage %></td>
+          </tr>
+        <% } %>
+        <tr class="total-row">
+          <td class="subject-col">Total</td>
+          <td><%= totalMax %></td>
+          <td><%= totalObtained %></td>
+          <td><%= totalMax > 0 ? ((totalObtained / totalMax) * 100).toFixed(0) + '%' : '-' %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="signatures">
+      <div class="signature-box">
+        <% if (settings.sysAdminSignature) { %>
+          <img src="<%= settings.sysAdminSignature %>" class="signature-img" />
+        <% } else { %>
+          <div style="height: 50px;"></div>
+        <% } %>
+        <p>System Administrator</p>
+      </div>
+      
+      <div class="signature-box">
+        <div style="height: 50px;"></div>
+        <p>Class Teacher</p>
+      </div>
+
+      <div class="signature-box">
+        <% if (settings.principalSignature) { %>
+          <img src="<%= settings.principalSignature %>" class="signature-img" />
+        <% } else { %>
+          <div style="height: 50px;"></div>
+        <% } %>
+        <p>Principal</p>
+      </div>
+    </div>
+
+    <div class="parent-signature">
+      <p style="font-weight: bold; margin-bottom: 20px;">Parent's Signature</p>
+      <div class="parent-row">
+        <span>Father __________________________</span>
+        <span>Mother __________________________</span>
+        <span>Date: ________________</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
