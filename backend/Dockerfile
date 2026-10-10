@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:22-slim
 
 # Install latest chrome dev package and fonts to support Major Harfbuzz and Puppeteer
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
