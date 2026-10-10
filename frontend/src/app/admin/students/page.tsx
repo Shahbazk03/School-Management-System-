@@ -160,6 +160,7 @@ export default function AdminStudentsPage() {
       parentRelation: 'FATHER',
       academicSessionId: '',
       classSectionId: '',
+      rollNumber: '',
     });
   };
 
